@@ -24,7 +24,10 @@
 #include "hw.h"
 
 // Functions
-void mc_interface_init(mc_configuration *configuration);
+void mc_interface_init(void);
+int mc_interface_motor_now(void);
+void mc_interface_select_motor_thread(int motor);
+int mc_interface_get_motor_thread(void);
 const volatile mc_configuration* mc_interface_get_configuration(void);
 void mc_interface_set_configuration(mc_configuration *configuration);
 void mc_interface_set_pwm_callback(void (*p_func)(void));
@@ -44,6 +47,7 @@ void mc_interface_set_current_rel(float val);
 void mc_interface_set_brake_current_rel(float val);
 void mc_interface_set_handbrake(float current);
 void mc_interface_set_handbrake_rel(float val);
+int mc_interface_set_tachometer_value(int steps);
 void mc_interface_brake_now(void);
 void mc_interface_release_motor(void);
 float mc_interface_get_duty_cycle_set(void);
@@ -67,6 +71,8 @@ float mc_interface_read_reset_avg_motor_current(void);
 float mc_interface_read_reset_avg_input_current(void);
 float mc_interface_read_reset_avg_id(void);
 float mc_interface_read_reset_avg_iq(void);
+float mc_interface_read_reset_avg_vd(void);
+float mc_interface_read_reset_avg_vq(void);
 float mc_interface_get_pid_pos_set(void);
 float mc_interface_get_pid_pos_now(void);
 float mc_interface_get_last_sample_adc_isr_duration(void);
@@ -77,11 +83,12 @@ float mc_interface_get_battery_level(float *wh_left);
 float mc_interface_get_speed(void);
 float mc_interface_get_distance(void);
 float mc_interface_get_distance_abs(void);
+setup_values mc_interface_get_setup_values(void);
 
 // MC implementation functions
-void mc_interface_fault_stop(mc_fault_code fault);
+void mc_interface_fault_stop(mc_fault_code fault, bool is_second_motor, bool is_isr);
 int mc_interface_try_input(void);
-void mc_interface_mc_timer_isr(void);
+void mc_interface_mc_timer_isr(bool is_second_motor);
 
 // Interrupt handlers
 void mc_interface_adc_inj_int_handler(void);
